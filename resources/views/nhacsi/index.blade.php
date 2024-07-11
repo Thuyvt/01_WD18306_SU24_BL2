@@ -24,7 +24,10 @@
             <tr>
                 <td>{{$item->id}}</td>
                 <td>{{$item->ten}}</td>
-                <td>{{$item->anh}}</td>
+                <td>
+                    <img src="{{Storage::url($item->anh)}}" alt="" width="50" height="50">
+{{--                    {{$item->anh}}--}}
+                </td>
                 <td>{{$item->ngaysinh}}</td>
                 <td>{{$item->quequan}}</td>
                 <td>{{$item->created_at}}</td>

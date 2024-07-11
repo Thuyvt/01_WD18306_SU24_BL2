@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class NhacsiController extends Controller
 {
@@ -30,7 +32,22 @@ class NhacsiController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //Lấy tất cả input truyền vào ngoại trừ anh
+        $data = $request->except('anh');
+        if ($request->hasFile('anh')) {
+            $data['anh'] = Storage::put('nhacsi', $request->file('anh'));
+        } else {
+            $data['anh'] = '';
+        }
+//        dd($data);
+        DB::table('nhacsis')->insert([
+            'ten' => $request->ten,
+            'anh' => $data["anh"],
+            'ngaysinh' => $request->ngaysinh,
+            'quequan' => $request->quequan,
+            'created_at' => Carbon::now()
+        ]);
+        return redirect()->route('nhacsi.index');
     }
 
     /**
@@ -52,7 +69,8 @@ class NhacsiController extends Controller
     public function edit(string $id)
     {
         //
-        return view('nhacsi.edit');
+        $model = DB::table('nhacsis')->where('id', $id)->first();
+        return view('nhacsi.edit', compact('model'));
 
     }
 
@@ -62,6 +80,23 @@ class NhacsiController extends Controller
     public function update(Request $request, string $id)
     {
         //
+        //Lấy tất cả input truyền vào ngoại trừ anh
+        $data = $request->except('anh');
+        if ($request->hasFile('anh')) {
+            $data['anh'] = Storage::put('nhacsi', $request->file('anh'));
+        } else {
+            $data['anh'] = '';
+        }
+//        dd($data);
+        DB::table('nhacsis')->where('id', $id)->update([
+            'ten' => $request->ten,
+            'anh' => $data["anh"],
+            'ngaysinh' => $request->ngaysinh,
+            'quequan' => $request->quequan,
+            'updated_at' => Carbon::now()
+
+        ]);
+        return redirect()->route('nhacsi.index');
     }
 
     /**
