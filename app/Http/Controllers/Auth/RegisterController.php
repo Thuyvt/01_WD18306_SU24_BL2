@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Mail\VerifyEmail;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class RegisterController extends Controller
 {
@@ -30,6 +33,10 @@ class RegisterController extends Controller
 
         // Cấp lại session cho user mới đăng nhập
         $request->session()->regenerate();
+
+        // xác thực tài khoản
+        $token = base64_encode($user->email);
+        Mail::to($user->email)->send(new VerifyEmail($token, $user->name));
 
         return redirect()->intended('/');
     }
